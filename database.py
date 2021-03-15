@@ -51,12 +51,20 @@ with open('people.csv', 'w') as csvfile:
     for i in editedLists:
         csvriter.writerow(i)
 
+# Need to retrieve new people.csv file once "Region" section was populated and stored
 with open('people.csv') as csvfile:
     readcsv = csv.reader(csvfile, delimiter=',')
 
-    def storeReadCSV(l=[]):
+    def fetchCSVItems():
+        l = []
+        k = 0
         for i in readcsv:
+            if (k == 0):
+                i.insert(0, "Id")
+            else:
+                i.insert(0, k)
             l.append(i)
+            k += 1
         return l
 
     conn = sqlite3.connect('people.db')
@@ -64,19 +72,24 @@ with open('people.csv') as csvfile:
     c = conn.cursor()
 
     #ONLY to be executed ONCE when creating the table instance. Delete after****************#
-    c.execute("""CREATE TABLE people( 
-        Name    TEXT, 
-        Title   TEXT,
-        City    TEXT,
-        State   TEXT,
-        Region  TEXT
+    c.execute("""CREATE TABLE people(
+        Id      INTEGER,
+        Name    VARCHAR,
+        Title   VARCHAR,
+        City    VARCHAR,
+        State   VARCHAR,
+        Region  VARCHAR
     )""")
-    #*****************************#
+    # *****************************
 
-    c.executemany("INSERT INTO people VALUES(?,?,?,?,?)",
-                  copy.deepcopy(storeReadCSV()))
+    c.executemany("INSERT INTO people VALUES(?,?,?,?,?,?)",
+                  copy.deepcopy(fetchCSVItems()))  # Safer to not have a reference
 
-    print('Command executed successfully...')
+    c.execute("SELECT * FROM people")
+
+    items = c.fetchall()
+    for item in items:
+        print(item)
 
     conn.commit()
 
