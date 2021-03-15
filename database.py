@@ -1,8 +1,16 @@
 import sqlite3
 import csv
 import json
+import copy
 
 editedLists = []
+
+
+def trimList(list):
+    for i in range(0, len(list)):
+        list[i] = list[i].strip()
+    return list
+
 
 with open('people.csv') as csvfile:
     readcsv = csv.reader(csvfile, delimiter=',')
@@ -10,25 +18,20 @@ with open('people.csv') as csvfile:
     with open('state_to_region.json') as f:
         data = json.load(f)
 
-    def trimList(list):
-        for i in range(0, len(list)):
-            list[i] = list[i].strip()
-        return list
-
     rPos = 4
     sPos = 3
 
+    elPos = 0
     for l in readcsv:
         l = trimList(l)
 
         def regionExists(pos=3):
             return (l[pos] in data.keys())
 
-        if (len(l) == 5):
+        if (len(l) == 5 and elPos != 0):
             if (regionExists() and (l[rPos] == '')):
                 l[rPos] = data[l[sPos]]
         else:
-            print(l)
             while(len(l) != 5):
                 l.append('NULL')
             for i in range(0, len(l)):
@@ -40,6 +43,7 @@ with open('people.csv') as csvfile:
                 if (l[i] == ''):
                     l[i] = 'NULL'
 
+        elPos += 1
         editedLists.append(l)
 
 with open('people.csv', 'w') as csvfile:
@@ -47,21 +51,33 @@ with open('people.csv', 'w') as csvfile:
     for i in editedLists:
         csvriter.writerow(i)
 
-conn = sqlite3.connect('people.db')
+with open('people.csv') as csvfile:
+    readcsv = csv.reader(csvfile, delimiter=',')
 
-c = conn.cursor()
+    def storeReadCSV(l=[]):
+        for i in readcsv:
+            l.append(i)
+        return l
 
-c.execute("""CREATE TABLE people(
-    Id      INTEGER,
-    Name    TEXT,
-    Title   TEXT,
-    City    TEXT,
-    State   TEXT,
-    Region  TEXT
-)""")
+    conn = sqlite3.connect('people.db')
 
-c.execute("INSERT INTO people VALUES()")
+    c = conn.cursor()
 
-conn.commit()
+    #ONLY to be executed ONCE when creating the table instance. Delete after****************#
+    c.execute("""CREATE TABLE people( 
+        Name    TEXT, 
+        Title   TEXT,
+        City    TEXT,
+        State   TEXT,
+        Region  TEXT
+    )""")
+    #*****************************#
 
-conn.close()
+    c.executemany("INSERT INTO people VALUES(?,?,?,?,?)",
+                  copy.deepcopy(storeReadCSV()))
+
+    print('Command executed successfully...')
+
+    conn.commit()
+
+    conn.close()
