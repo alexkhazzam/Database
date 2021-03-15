@@ -42,31 +42,26 @@ with open('people.csv') as csvfile:
 
         editedLists.append(l)
 
+with open('people.csv', 'w') as csvfile:
+    csvriter = csv.writer(csvfile)
+    for i in editedLists:
+        csvriter.writerow(i)
 
-def writeToCSV():
-    with open('people.csv', 'w') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        for i in editedLists:
-            csvwriter.writerow(i)
-        writeToSQLite()
+conn = sqlite3.connect('people.db')
 
+c = conn.cursor()
 
-def writeToSQLite():
-    conn = sqlite3.connect('people.db')
+c.execute("""CREATE TABLE people(
+    Id      INTEGER,
+    Name    TEXT,
+    Title   TEXT,
+    City    TEXT,
+    State   TEXT,
+    Region  TEXT
+)""")
 
-    c = conn.cursor()
+c.execute("INSERT INTO people VALUES()")
 
-    c.execute("""CREATE TABLE people(
-        Id      INTEGER,
-        Name    TEXT,
-        Title   TEXT,
-        City    TEXT,
-        State   TEXT,
-        Region  TEXT
-    )""")
+conn.commit()
 
-    c.execute("INSERT INTO people VALUES()")
-
-    conn.commit()
-
-    conn.close()
+conn.close()
