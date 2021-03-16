@@ -90,8 +90,10 @@ with open('people.csv') as csvfile:
     )""")
     # *****************************
 
+    #ONLY to be executed ONCE. Delete after inserting values****************#
     c.executemany("INSERT INTO people VALUES(?,?,?,?,?,?)",
                   copy.deepcopy(fetchCSVItems()))  # Safer to not have a reference
+    # *****************************
 
     c.execute("SELECT * FROM people")
 
