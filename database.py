@@ -33,6 +33,7 @@ with open('people.csv') as csvfile:
                 l[rPos] = data[l[sPos]]
         else:
             while(len(l) != 5):
+                # Note that NULL is the same as leaving the cell blank; this is simply for readability purposes
                 l.append('NULL')
             for i in range(0, len(l)):
                 if (regionExists(i)):
