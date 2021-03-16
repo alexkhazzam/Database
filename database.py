@@ -30,7 +30,7 @@ with open('people.csv') as csvfile:
         def regionExists(pos=3):
             return (l[pos] in data.keys())
 
-        if (len(l) == 5 and elPos != 0):
+        if (len(l) == 5 and elPos != 0):  # No need to check region for first row (header section)
             if (regionExists() and (l[rPos] == '')):
                 l[rPos] = data[l[sPos]]
         else:
@@ -38,13 +38,16 @@ with open('people.csv') as csvfile:
                 # Note that NULL is the same as leaving the cell blank; this is simply for readability purposes
                 l.append('NULL')
             for i in range(0, len(l)):
+                def nullifyEl():
+                    l[i] = 'NULL'
+
                 if (regionExists(i)):
                     l[rPos] = data[l[i]]
                     l[sPos] = l[i]
-                    l[i] = 'NULL'
+                    nullifyEl()
                     break
                 if (l[i] == ''):
-                    l[i] = 'NULL'
+                    nullifyEl()
 
         elPos += 1
         editedLists.append(l)
