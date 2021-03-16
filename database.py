@@ -5,6 +5,8 @@ import copy
 
 editedLists = []
 
+#Populating "Region" cell before storing in database (NOT required)****************#
+
 
 def trimList(list):
     for i in range(0, len(list)):
@@ -51,6 +53,8 @@ with open('people.csv', 'w') as csvfile:
     csvriter = csv.writer(csvfile)
     for i in editedLists:
         csvriter.writerow(i)
+
+ # *****************************
 
 # Need to retrieve new people.csv file once "Region" section was populated and stored
 with open('people.csv') as csvfile:
