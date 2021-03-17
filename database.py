@@ -20,15 +20,15 @@ with open('people.csv') as csvfile:
     elPos = 0
     for row in readcsv:
         while(len(row) != 5):
-            row.append('NONE')
+            row.append('None')
         for el in range(0, len(trimElements(row))):
             if (elPos != 0):  # No need to loop through header row
                 if (row[el] in data.keys()):
                     row[3] = row[el]
                     row[3 + 1] = data[row[el]]
                 elif (row[el] == '' or row[el] == 'None'):
-                    # Note that NONE is the same as leaving the cell blank; this is simply for readability purposes
-                    row[el] = 'NONE'
+                    # Note that None is the same as leaving the cell blank; this is simply for readability purposes
+                    row[el] = 'None'
             else:
                 break
         elPos += 1
