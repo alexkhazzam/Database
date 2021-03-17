@@ -11,7 +11,7 @@ CREATE TABLE people(
 INSERT INTO people VALUES('Id','Name','Title','City','State','Region');
 INSERT INTO people VALUES(1,'John','Dr','New York','NY','Northeast');
 INSERT INTO people VALUES(2,'Sarah','Mrs','Denver','CO','West');
-INSERT INTO people VALUES(3,'David','NULL','Washington','NULL','NULL');
-INSERT INTO people VALUES(4,'William','Mr','NULL','WI','Midwest');
-INSERT INTO people VALUES(5,'None','None','None','NULL','NULL');
+INSERT INTO people VALUES(3,'David','NONE','Washington','NONE','NONE');
+INSERT INTO people VALUES(4,'William','Mr','NONE','WI','Midwest');
+INSERT INTO people VALUES(5,'NONE','NONE','NONE','NONE','NONE');
 COMMIT;

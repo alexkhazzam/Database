@@ -3,15 +3,7 @@ import csv
 import json
 import copy
 
-editedLists = []
-
-#Populating "Region" cell before storing in database (NOT required)****************#
-
-
-def trimList(list):
-    for i in range(0, len(list)):
-        list[i] = list[i].strip()
-    return list
+populatedTable = []
 
 
 with open('people.csv') as csvfile:
@@ -20,53 +12,37 @@ with open('people.csv') as csvfile:
     with open('state_to_region.json') as f:
         data = json.load(f)
 
-    rPos = 4
-    sPos = 3
+    def trimElements(l):
+        for el in range(0, len(l)):
+            l[el] = l[el].strip()
+        return copy.deepcopy(l)
 
     elPos = 0
-    for l in readcsv:
-        l = trimList(l)
-
-        def regionExists(pos=3):
-            return (l[pos] in data.keys())
-
-        if (len(l) == 5 and elPos != 0):  # No need to check region for first row (header section)
-            if (regionExists() and (l[rPos] == '')):
-                l[rPos] = data[l[sPos]]
-        else:
-            while(len(l) != 5):
-                # Note that NULL is the same as leaving the cell blank; this is simply for readability purposes
-                l.append('NULL')
-            for i in range(0, len(l)):
-                def nullifyEl():
-                    l[i] = 'NULL'
-
-                if (regionExists(i)):
-                    l[rPos] = data[l[i]]
-                    l[sPos] = l[i]
-                    nullifyEl()
-                    break
-                if (l[i] == ''):
-                    nullifyEl()
-
+    for row in readcsv:
+        while(len(row) != 5):
+            row.append('NONE')
+        for el in range(0, len(trimElements(row))):
+            if (elPos != 0):  # No need to loop through header row
+                if (row[el] in data.keys()):
+                    row[3] = row[el]
+                    row[3 + 1] = data[row[el]]
+                elif (row[el] == '' or row[el] == 'None'):
+                    # Note that NONE is the same as leaving the cell blank; this is simply for readability purposes
+                    row[el] = 'NONE'
+            else:
+                break
         elPos += 1
-        editedLists.append(l)
+        populatedTable.append(row)
 
-with open('people.csv', 'w') as csvfile:
+with open('populated-people.csv', 'w') as csvfile:
     csvriter = csv.writer(csvfile)
-    for i in editedLists:
-        csvriter.writerow(i)
-
- # *****************************
-
-# Need to retrieve new people.csv file once "Region" section was populated and stored
-with open('people.csv') as csvfile:
-    readcsv = csv.reader(csvfile, delimiter=',')
+    for row in populatedTable:
+        csvriter.writerow(row)
 
     def fetchCSVItems():
         l = []
         k = 0
-        for i in readcsv:
+        for i in populatedTable:
             if (k == 0):
                 i.insert(0, "Id")
             else:

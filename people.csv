@@ -1,6 +1,6 @@
-Name,Title,City,State,Region
-John,Dr,New York,NY,Northeast
-Sarah,Mrs,Denver,CO,West
-David,NULL,Washington,NULL,NULL
-William,Mr,NULL,WI,Midwest
-None,None,None,NULL,NULL
+Name,	    Title,	    City,	        State,	Region
+John,	    Dr,	        New York,	    NY,	
+Sarah,	    Mrs,	    Denver,	        CO,	
+David,		            ,Washington,    		
+William,	Mr,		    WI,	               
+	        None,	    None,	        None,	
